@@ -8,7 +8,7 @@ OS：Ubuntu-22.04(FROM WSL2)
 ## INSTALL
 ### 1. Get Repo From Github Organization
 New Toekn(classic)
-![](https://hackmd.io/_uploads/HkEJ0LfzT.png)
+![image](https://github.com/MISDBProject/ProjectOne/readmepic/github_token.png)
 ```bash!=
 sudo apt install git 
 sudo apt install gh
