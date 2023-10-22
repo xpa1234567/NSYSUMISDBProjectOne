@@ -8,10 +8,16 @@ OS：Ubuntu-22.04(FROM WSL2)
 ## INSTALL
 ### 1. Get Repo From Github Organization
 New Toekn(classic)
-![image](https://github.com/MISDBProject/ProjectOne/readmepic/github_token.png)
+![image]https://github.com/MISDBProject/ProjectOne/blob/main/readmepic/github_token.png)
+
 ```bash!=
 sudo apt install git 
+    git config --global core.editor "vim"
+    git config --global user.email "you@example.com"
+    git config --global user.name "Your Name"
+  
 sudo apt install gh
+
 ```
 
 上述產生的Token這邊用，gh auth login  [參考](https://cli.github.com/manual/gh_auth_login)
