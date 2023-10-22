@@ -1,9 +1,9 @@
 # MSI_DB_ProjectOne
 
->Due Date：<font color="#f00">**2023/11/14**</font>
-Language：Python
-DBMS：Oracle
-OS：Ubuntu-22.04(FROM WSL2)
+>- Due Date：<font color="#f00">**2023/11/14**</font>
+>- Language：Python
+>- DBMS：Oracle
+>- OS：Ubuntu-22.04(FROM WSL2)
 
 ## INSTALL
 ### 1. Get Repo From Github Organization
