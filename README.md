@@ -7,7 +7,7 @@
 
 ## INSTALL
 ### 1. Get Repo From Github Organization
-New Toekn(classic)
+New Token(classic)
 
 ![image](https://github.com/MISDBProject/ProjectOne/blob/main/readmepic/github_token.png)
 
