@@ -8,7 +8,8 @@ OS：Ubuntu-22.04(FROM WSL2)
 ## INSTALL
 ### 1. Get Repo From Github Organization
 New Toekn(classic)
-![image]https://github.com/MISDBProject/ProjectOne/blob/main/readmepic/github_token.png)
+
+![image](https://github.com/MISDBProject/ProjectOne/blob/main/readmepic/github_token.png)
 
 ```bash!=
 sudo apt install git 
