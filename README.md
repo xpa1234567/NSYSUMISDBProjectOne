@@ -1,5 +1,7 @@
 # MSI_DB_ProjectOne
 
+https://medium.com/@hiimdoublej/pipenv指令大全-6e4415cc8a15
+
 >- Due Date：<font color="#f00">**2023/11/14**</font>
 >- Language：Python
 >- DBMS：Oracle
