@@ -3,12 +3,12 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %}Login Page{% endblock title%}
+{% block title %}使用者登入{% endblock title%}
 
 {% block content%}
 <div class="position-absolute top-50 start-50 translate-middle outer_div ">
     <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
-    <h1 class="register_title mb-4 mt-4">會員登入</h1>
+    <h1 class="register_title mb-4 mt-4">使用者登入</h1>
     <div class="form_div">
         <form  method='post' action={{ url_for('api.login') }} >
             <p class="mb-4">
