@@ -8,6 +8,12 @@
 
 {% block content %}
 
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+
 <div class="container-xxl">
 
     <center>
@@ -23,6 +29,39 @@
                                 class="fas fa-angle-down mt-1"></i></a></p>
                 </div>
             </div>
+            <table id="jds-example" class="table">
+                <thead>
+                    <tr>
+                        {% for col in data %}
+                        <th scope="col"> {{ col.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    {% for col in data %}
+                        <td scope="row">{{ col.salary }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for col in data %}
+                        <td scope="row">{{ col.start_date }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% for col in data %}
+                        <td scope="row">{{ col.office }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% for col in data %}
+                        <td scope="row">{{ col.extn }}</td>
+                        {% endfor %}
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+
+
             <div class="table-responsive">
                 <table class="table table-bordered text-center">
                     <thead>
