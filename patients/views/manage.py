@@ -9,20 +9,53 @@ from flask_login import (
     login_required,
     current_user,
 )
+from api.sql import *
 import json
 
+
 patients = Blueprint("patients", __name__, template_folder="../templates")
+
+login_manager = LoginManager(patients)
+login_manager.login_view = "patients.login"
+login_manager.login_message = "請先登入"
+
+
+class User(UserMixin):
+    pass
+
+
+@login_manager.user_loader
+def user_loader(userId):
+    user = User()
+    user.id = userId
+    data = Member.get_role(userId)
+    try:
+        # IDENTITY,MID
+        user.role = data[0]
+        user.name = data[1]
+    except:
+        pass
+    return user
 
 
 @patients.route("/", methods=["GET", "POST"])
 def home():
-    return render_template("indexfp.html")
+    return render_template("indexfp.html",loginFlag=current_user.is_authenticated)
 
 
 @patients.route("/register", methods=["POST", "GET"])
 def register():
-    # if request.method == "POST":
-        # user_account = request.form["account"]
+    if request.method == "POST":
+        patientsName = request.form["patientsName"]
+        patientsAccount = request.form["patientsAccount"]
+        patientspassword = request.form["patientspassword"]
+        patientsBirthday = request.form["patientsBirthday"]
+        patientsCellphone = request.form["patientsCellphone"]
+        patientsPhone = request.form["patientsPhone"]
+        patientsAddress = request.form["patientsAddress"]
+        patientsHabbit = request.form["patientsHabbit"]
+        patientsDisease = request.form["patientsDisease"]
+        patientsNote = request.form["patientsNote"]
         # exist_account = Member.get_all_account()
         # account_list = []
         # for i in exist_account:
@@ -43,41 +76,47 @@ def register():
 
     return render_template("registerfp.html")
 
+
 @patients.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("patients.home"))
     else:
         if request.method == "POST":
-            account = request.form["account"]
-            password = request.form["password"]
-            data = Member.get_member(account)
+            patientsAccount = request.form["patientsAccount"]
+            patientspassword = request.form["patientspassword"]
+
+            data = Member.get_member(patientsAccount)
 
             try:
-                DB_password = data[0][1]
-                user_id = data[0][2]
+                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
+                userId = data[0][0]
+                dbPassword = data[0][2]
                 identity = data[0][3]
 
             except:
                 flash("*沒有此帳號")
-                return redirect(url_for("api.login"))
+                return redirect(url_for("patients.login"))
 
-            if DB_password == password:
+            if dbPassword == patientspassword:
                 user = User()
-                user.id = user_id
+                user.id = userId
                 login_user(user)
-                return redirect(url_for("patients.home"))
-                # if( identity == 'user'):
-                #     return redirect(url_for('bookstore.bookstore'))
-                # else:
-                #     return redirect(url_for('manager.productManager'))
+                if identity == "PATIENT":
+                    return redirect(url_for("patients.home"))
+                else:
+                    return redirect(url_for("patients.home"))
 
             else:
                 flash("*密碼錯誤，請再試一次")
-                return redirect(url_for("patients.login"))
+                return redirect(url_for("patients.login"))    
+        return render_template("loginfp.html",loginFlag=current_user.is_authenticated)
 
-        return render_template("loginfp.html")
-    
+@patients.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("patients.home"))
+
 
 @patients.route("/period", methods=["GET", "POST"])
 @login_required
@@ -101,8 +140,6 @@ def period():
             "extn": "2154",
         },
     ]
-
-
 
     return render_template(
         "period.html",

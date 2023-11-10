@@ -10,20 +10,21 @@
     <img class="index_pic" src="{{ url_for('static', filename='./img/background.png') }}">
     <h1 class="index_title">Project One <br> 點穴中醫診所系統 <br> 病患使用 </h1>
     <div class="btn_div">
-        
+
+        {% if loginFlag == False %}
         <a href="{{ url_for('patients.register') }}">
             <button class="index_btn">註冊</button>
         </a>
         <a href="{{ url_for('patients.login') }}">
             <button class="index_btn">登入</button>
         </a>
-        
-        <!-- <a href="{{ url_for('api.login') }}">
-            <button class="index_btn">首頁</button>
-        </a> -->
-        
-        {% if loginFlag == False %}
         {% else %}
+        <a href="{{ url_for('patients.home') }}">
+            <button class="index_btn">首頁</button>
+        </a>
+        <a href="{{ url_for('patients.logout') }}">
+            <button class="index_btn">登出系統</button>
+        </a>
         {% endif %}
     </div>
 </div>

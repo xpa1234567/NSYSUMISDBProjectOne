@@ -10,22 +10,22 @@
     <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
     <h1 class="register_title mb-4 mt-4">病患登入</h1>
     <div class="form_div">
-        <form  method='post' action={{ url_for('api.login') }} >
+        <form method='post' action={{ url_for('patients.login') }}>
             <p class="mb-4">
-                帳號：<input type="text" name="account" placeholder="請輸入身分證字號" required/>
+                帳號：<input type="text" name="patientsAccount" placeholder="請輸入身分證字號" required />
             </p>
             <p class="mb-4">
-                密碼：<input type="password" name="password" placeholder="請輸入密碼" required/>
+                密碼：<input type="password" name="patientspassword" placeholder="請輸入密碼" required />
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                
-                <p class="same_accoount">
-                    {% for i in messages %}
-                        {{ i }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-                {% endwith %}
+
+            <p class="same_accoount">
+                {% for i in messages %}
+                {{ i }}
+                {% endfor %}
+            </p>
+            {% endif %}
+            {% endwith %}
             </p>
             <p class="mb-4">
                 <a href="{{ url_for('patients.home') }}">

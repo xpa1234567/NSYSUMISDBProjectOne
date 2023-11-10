@@ -38,60 +38,66 @@ def user_loader(userid):
 @api.route("/login", methods=["POST", "GET"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for("patients.home"))
+        return render_template("index.html", loginFlag=current_user.is_authenticated)
     else:
         if request.method == "POST":
             account = request.form["account"]
             password = request.form["password"]
+
             data = Member.get_member(account)
 
             try:
-                DB_password = data[0][1]
-                user_id = data[0][2]
+                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
+                userId = data[0][0]
+                dbPassword = data[0][2]
                 identity = data[0][3]
 
             except:
                 flash("*沒有此帳號")
                 return redirect(url_for("api.login"))
 
-            if DB_password == password:
+            if dbPassword == password:
                 user = User()
-                user.id = user_id
+                user.id = userId
                 login_user(user)
-                return redirect(url_for("patients.home"))
-                # if( identity == 'user'):
-                #     return redirect(url_for('bookstore.bookstore'))
-                # else:
-                #     return redirect(url_for('manager.productManager'))
-
+                if identity == "Doctor":
+                    return redirect(url_for("patients.home"))
+                elif identity == "FRONT_DESK":
+                    return redirect(url_for("patients.home"))
             else:
                 flash("*密碼錯誤，請再試一次")
                 return redirect(url_for("api.login"))
-
-        return render_template("login.html")
+        return render_template("login.html", loginFlag=current_user.is_authenticated)
 
 
 @api.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-        user_account = request.form["account"]
-        exist_account = Member.get_all_account()
-        account_list = []
-        for i in exist_account:
-            account_list.append(i[0])
+        username = request.form["username"]
+        account = request.form["account"]
+        password = request.form["password"]
+        speicalization = request.form["speicalization"]
+        position = request.form["position"]
+        education = request.form["education"]
+        experience = request.form["experience"]
 
-        if user_account in account_list:
-            flash("Falied!")
-            return redirect(url_for("api.register"))
-        else:
-            input = {
-                "name": request.form["username"],
-                "account": user_account,
-                "password": request.form["password"],
-                "identity": request.form["identity"],
-            }
-            Member.create_member(input)
-            return redirect(url_for("api.login"))
+        # exist_account = Member.get_all_account()
+        # account_list = []
+        # for i in exist_account:
+        #     account_list.append(i[0])
+
+        # if user_account in account_list:
+        #     flash("Falied!")
+        #     return redirect(url_for("api.register"))
+        # else:
+        #     input = {
+        #         "name": request.form["username"],
+        #         "account": user_account,
+        #         "password": request.form["password"],
+        #         "identity": request.form["identity"],
+        #     }
+        #     Member.create_member(input)
+        # return redirect(url_for("api.login"))
 
     return render_template("register.html")
 
