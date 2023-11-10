@@ -13,11 +13,11 @@
     <div class="form_div">
         <form method='post' action={{ url_for('api.register') }}>
             <p class="mb-3">
-                姓名：<input type="text" name="username" required />
+                姓名：<input type="text" name="username" placeholder="請輸入姓名" required />
             </p>
 
             <p class="mb-3">
-                帳號：<input type="text" name="account" required />
+                帳號：<input type="text" name="account" placeholder="請輸入身分證字號" required />
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
             <p class="same_accoount">
@@ -28,7 +28,35 @@
             </p>
 
             <p class="mb-4">
-                密碼：<input type="password" name="password" required />
+                密碼：<input type="password" name="password" placeholder="請輸入密碼" required />
+            </p>
+
+            <p class="mb-3">
+                生日：<input type="text" name="education" placeholder="請輸入生日" required />
+            </p>
+
+            <p class="mb-3">
+                手機：<input type="text" name="education" placeholder="請輸入手機" required />
+            </p>
+
+            <p class="mb-3">
+                電話：<input type="text" name="education" placeholder="請輸入電話" required />
+            </p>
+
+            <p class="mb-3">
+                地址：<input type="text" name="education" placeholder="請輸入地址" required />
+            </p>
+
+            <p class="mb-3">
+                飲食及生活習慣：<input type="text" name="education" placeholder="請輸入飲食及生活習慣" required />
+            </p>
+
+            <p class="mb-3">
+                先天疾病：<input type="text" name="education" placeholder="請輸入先天疾病" required />
+            </p>
+
+            <p class="mb-3">
+                備註：<input type="text" name="education" placeholder="請輸入備註" required />
             </p>
 
             <p>
