@@ -6,18 +6,66 @@
 {% block title %}註冊頁面{% endblock title%}
 
 {% block content%}
+<script>
+    function registerChange() {
+
+        var identity = document.getElementsByName("identity")[0].value;
+        var speicalizationP = document.getElementById("speicalizationP");
+        var positionP = document.getElementById("positionP");
+        var educationP = document.getElementById("educationP");
+        var experienceP = document.getElementById("experienceP");
+
+        if (identity == "doctor") {
+            if (speicalizationP.style.display === "none") {
+                speicalizationP.style.display = "";
+                positionP.style.display = "";
+                educationP.style.display = "";
+                experienceP.style.display = "";
+            } else {
+                speicalizationP.style.display = "";
+                positionP.style.display = "";
+                educationP.style.display = "";
+                experienceP.style.display = "";
+            };
+
+        } else if (identity == "counter") {
+            if (speicalizationP.style.display === "") {
+                speicalizationP.style.display = "none";
+                positionP.style.display = "none";
+                educationP.style.display = "none";
+                experienceP.style.display = "none";
+            } else {
+                speicalizationP.style.display = "none";
+                positionP.style.display = "none";
+                educationP.style.display = "none";
+                experienceP.style.display = "none";
+            };
+
+        };
+    }
+</script>
+
 <div class="position-absolute top-50 start-50 translate-middle outer_div">
     <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
     <h1 class="register_title mb-5 mt-5">使用者註冊</h1>
 
     <div class="form_div">
         <form method='post' action={{ url_for('api.register') }}>
+
+            <div class="btn_div mb-4" style="margin-bottom: 1rem;">
+                <p class="option_div">選擇你要註冊的身份：</p>
+                <select name="identity" onchange="registerChange()">
+                    <option value="doctor" selected>醫生</option>
+                    <option value="counter">櫃台人員</option>
+                </select>
+            </div>
+
             <p class="mb-3">
-                姓名：<input type="text" name="username" required />
+                姓名：<input type="text" name="username" placeholder="請輸入姓名" required />
             </p>
 
             <p class="mb-3">
-                帳號：<input type="text" name="account" required />
+                帳號：<input type="text" name="account" placeholder="請輸入身分證字號" required />
                 {% with messages = get_flashed_messages() %}
                 {% if messages %}
             <p class="same_accoount">
@@ -28,15 +76,21 @@
             </p>
 
             <p class="mb-4">
-                密碼：<input type="password" name="password" required />
+                密碼：<input type="password" name="password" placeholder="請輸入密碼" required />
             </p>
-            <div class="btn_div mb-4" style="margin-bottom: 1rem;">
-                <p class="option_div">選擇你要註冊的身份：</p>
-                <select name="identity">
-                    <option value="doctor" selected>醫生</option>
-                    <option value="counter">櫃台人員</option>
-                </select>
-            </div>
+
+            <p class="mb-3" id="speicalizationP">
+                科別：<input type="text" name="speicalization" placeholder="請輸入科別" required />
+            </p>
+            <p class="mb-3" id="positionP">
+                職別：<input type="text" name="position" placeholder="請輸入職別" required />
+            </p>
+            <p class="mb-3" id="educationP">
+                教育程度：<input type="text" name="education" placeholder="請輸入教育程度" required />
+            </p>
+            <p class="mb-3" id="experienceP">
+                經驗：<input type="text" name="experienceP" placeholder="請輸入經驗" required />
+            </p>
 
             <p>
                 <a href="{{ url_for('index') }}">
