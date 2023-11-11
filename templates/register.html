@@ -3,9 +3,17 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %}註冊頁面{% endblock title%}
+{% block title %}使用者註冊頁面{% endblock title%}
 
 {% block content%}
+{% with messages = get_flashed_messages() %}
+{% if messages[0]== 'Successed!'%}
+<script>
+    alert("新增成功");
+</script>
+{% endif %}
+{% endwith %}
+
 <script>
     function registerChange() {
 
@@ -56,6 +64,9 @@
     }
 </script>
 
+
+
+
 <div class="position-absolute top-50 start-50 translate-middle outer_div">
     <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
     <h1 class="register_title mb-5 mt-5">使用者註冊</h1>
@@ -78,7 +89,7 @@
             <p class="mb-3">
                 帳號：<input type="text" name="account" placeholder="請輸入身分證字號" required />
                 {% with messages = get_flashed_messages() %}
-                {% if messages %}
+                {% if messages[0]== 'Falied!'%}
             <p class="same_accoount">
                 *已經有相同的帳號名稱
             </p>

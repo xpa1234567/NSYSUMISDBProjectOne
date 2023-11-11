@@ -3,9 +3,18 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %}註冊頁面{% endblock title%}
+{% block title %}病患註冊頁面{% endblock title%}
 
 {% block content%}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0]== 'Successed!'%}
+<script>
+    alert("新增成功");
+</script>
+{% endif %}
+{% endwith %}
+
 <div class="position-absolute top-50 start-50 translate-middle outer_div">
     <a href="{{ url_for('index') }}"><img class="icon" src="{{ url_for('static', filename='./img/home.png') }}"></a>
     <h1 class="register_title mb-5 mt-5">病患註冊</h1>
@@ -19,7 +28,7 @@
             <p class="mb-3">
                 帳號：<input type="text" name="patientsAccount" placeholder="請輸入身分證字號" required />
                 {% with messages = get_flashed_messages() %}
-                {% if messages %}
+                {% if messages[0]== 'Falied!' %}
             <p class="same_accoount">
                 *已經有相同的帳號名稱
             </p>
@@ -36,7 +45,7 @@
             </p>
 
             <p class="mb-3">
-                手機：<input type="text" name="patientsCellphone" placeholder="請輸入手機" required />
+                手機：<input type="text" name="patientsMobilephone" placeholder="請輸入手機" required />
             </p>
 
             <p class="mb-3">

@@ -73,32 +73,59 @@ def login():
 @api.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
+        identity = request.form["identity"]
         username = request.form["username"]
         account = request.form["account"]
         password = request.form["password"]
-        speicalization = request.form["speicalization"]
-        position = request.form["position"]
-        education = request.form["education"]
-        experience = request.form["experience"]
 
-        # exist_account = Member.get_all_account()
-        # account_list = []
-        # for i in exist_account:
-        #     account_list.append(i[0])
+        # Checl Duplicates Accounts
+        exist_account = Member.get_all_account()
+        account_list = []
+        for i in exist_account:
+            account_list.append(i[0])
 
-        # if user_account in account_list:
-        #     flash("Falied!")
-        #     return redirect(url_for("api.register"))
-        # else:
-        #     input = {
-        #         "name": request.form["username"],
-        #         "account": user_account,
-        #         "password": request.form["password"],
-        #         "identity": request.form["identity"],
-        #     }
-        #     Member.create_member(input)
-        # return redirect(url_for("api.login"))
+        if account in account_list:
+            flash("Falied!")
+            return redirect(url_for("api.register"))
+        else:
+            memberInput = {
+                "account": account,
+                "password": password,
+                "identity": identity,
+            }
 
+            Member.create_member(memberInput)
+            memberData = Member.get_member(account)
+
+            try:
+                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
+                mId = memberData[0][0]
+                if identity == "doctor":
+                    speicalization = request.form["speicalization"]
+                    position = request.form["position"]
+                    education = request.form["education"]
+                    experience = request.form["experience"]
+
+                    doctorinput = {
+                        "dId": "d" + mId,
+                        "username": username,
+                        "speicalization": speicalization,
+                        "position": position,
+                        "education": education,
+                        "experience": experience,
+                        "mId": mId,
+                    }
+                    Doctors.create_doc_member(doctorinput)
+                    flash("Successed!")
+                    return render_template("register.html")
+                else:
+                    fdpInput = {"pId": "fp" + mId, "username": username, "mId": mId}
+                    Frontdeskpersonel.create_front_member(fdpInput)
+                    flash("Successed!")
+                    return render_template("register.html")
+            except:
+                flash("Failed!")
+                return redirect(url_for("api.register"))
     return render_template("register.html")
 
 

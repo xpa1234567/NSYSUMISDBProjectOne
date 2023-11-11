@@ -50,30 +50,58 @@ def register():
         patientsAccount = request.form["patientsAccount"]
         patientspassword = request.form["patientspassword"]
         patientsBirthday = request.form["patientsBirthday"]
-        patientsCellphone = request.form["patientsCellphone"]
+        patientsMobilephone = request.form["patientsMobilephone"]
         patientsPhone = request.form["patientsPhone"]
         patientsAddress = request.form["patientsAddress"]
         patientsHabbit = request.form["patientsHabbit"]
         patientsDisease = request.form["patientsDisease"]
         patientsNote = request.form["patientsNote"]
-        # exist_account = Member.get_all_account()
-        # account_list = []
-        # for i in exist_account:
-        #     account_list.append(i[0])
 
-        # if user_account in account_list:
-        #     flash("Falied!")
-        #     return redirect(url_for("patients.register"))
-        # else:
-        #     input = {
-        #         "name": request.form["username"],
-        #         "account": user_account,
-        #         "password": request.form["password"],
-        #         "identity": request.form["identity"],
-        #     }
-        #     Member.create_member(input)
-        #     return redirect(url_for("api.login"))
+        identity = "patients"
 
+        # Checl Duplicates Accounts
+        exist_account = Member.get_all_account()
+        account_list = []
+        for i in exist_account:
+            account_list.append(i[0])
+
+        if patientsAccount in account_list:
+            flash("Falied!")
+            return redirect(url_for("patients.register"))
+        else:
+            memberInput = {
+                "account": patientsAccount,
+                "password": patientspassword,
+                "identity": identity,
+            }
+
+            Member.create_member(memberInput)
+            memberData = Member.get_member(patientsAccount)
+
+            try:
+                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
+                mId = memberData[0][0]
+                format = 'yyyy-mm-dd'
+                patientsinput = {
+                    "pId": "p" + mId,
+                    "patientsName": patientsName,
+                    "patientsBirthday": patientsBirthday,
+                    "format": format,
+                    "patientsMobilephone": patientsMobilephone,
+                    "patientsPhone": patientsPhone,
+                    "patientsAddress": patientsAddress,
+                    "patientsHabbit": patientsHabbit,
+                    "patientsDisease": patientsDisease,
+                    "patientsNote": patientsNote,
+                    "mId": mId,
+                }
+                Patients.create_patients_member(patientsinput)
+                flash("Successed!")
+                return render_template("registerfp.html")
+            except:
+                flash("Falied!")
+                return redirect(url_for("patients.register"))
+            
     return render_template("registerfp.html")
 
 
