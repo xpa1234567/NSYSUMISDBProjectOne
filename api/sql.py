@@ -99,7 +99,11 @@ class Member:
     #     sql = "SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC"
     #     return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": userid}))
 
-
+class Acupoints:
+    def get_acupoints():
+        sql = "SELECT * FROM ACUPOINTS"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
 # class Cart:
 #     def check(user_id):
 #         sql = (

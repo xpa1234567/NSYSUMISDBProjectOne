@@ -228,4 +228,14 @@ def personal():
 @api.route("/acupoint", methods=["GET", "POST"])
 @login_required
 def acupoint():
-    return render_template("acupoint.html", user=current_user.name)
+    acupointData = Acupoints.get_acupoints()
+    returnData = []
+    for i in range(len(acupointData)):
+        returnData.append(
+            {
+                "id": acupointData[i][0],
+                "name": acupointData[i][1],
+            }
+        )
+
+    return render_template("acupoint.html", user=current_user.name, data=returnData)
