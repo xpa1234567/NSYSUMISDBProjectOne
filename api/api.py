@@ -1,5 +1,5 @@
 import imp
-from flask import render_template, Blueprint, redirect, request, url_for, flash
+from flask import Flask,template_rendered,render_template, Blueprint, redirect, request, url_for, flash
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -10,6 +10,8 @@ from flask_login import (
 )
 from link import *
 from api.sql import *
+import json
+
 
 api = Blueprint("api", __name__, template_folder="./templates")
 
@@ -23,56 +25,18 @@ class User(UserMixin):
 
 
 @login_manager.user_loader
-def user_loader(userid):
+def user_loader(userId):
     user = User()
-    user.id = userid
-    data = Member.get_role(userid)
+    user.id = userId
+    data = Member.get_role(userId)
+    doctorData = Doctors.get_doctor_name(data[1])
     try:
         user.role = data[0]
-        user.name = data[1]
+        user.mId = data[1]
+        user.name = doctorData[0]
     except:
         pass
     return user
-
-
-@api.route("/login", methods=["POST", "GET"])
-def login():
-    if current_user.is_authenticated:
-        return render_template("index.html", loginFlag=current_user.is_authenticated)
-    else:
-        if request.method == "POST":
-            account = request.form["account"]
-            password = request.form["password"]
-
-            data = Member.get_member(account)
-
-            try:
-                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
-                userId = data[0][0]
-                dbPassword = data[0][2]
-                identity = data[0][3]
-
-            except:
-                flash("*沒有此帳號")
-                return redirect(url_for("api.login"))
-
-            if dbPassword == password:
-                user = User()
-                user.id = userId
-                login_user(user)
-                if identity == "Doctor":
-                    # return redirect(url_for("patients.home"))
-                    return redirect(url_for("index"))
-                elif identity == "FRONT_DESK":
-                    # return redirect(url_for("patients.home"))
-                    return redirect(url_for("index"))
-                else:
-                     flash("僅供診所人員使用!")
-            else:
-                flash("*密碼錯誤，請再試一次")
-                return redirect(url_for("api.login"))
-        return render_template("login.html", loginFlag=current_user.is_authenticated)
-
 
 @api.route("/register", methods=["POST", "GET"])
 def register():
@@ -137,7 +101,84 @@ def register():
     return render_template("register.html")
 
 
+@api.route("/login", methods=["POST", "GET"])
+def login():
+    if current_user.is_authenticated:
+        return render_template("index.html", loginFlag=current_user.is_authenticated)
+    else:
+        if request.method == "POST":
+            account = request.form["account"]
+            password = request.form["password"]
+
+            data = Member.get_member(account)
+
+            try:
+                # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
+                userId = data[0][0]
+                dbPassword = data[0][2]
+                identity = data[0][3]
+
+            except:
+                flash("*沒有此帳號")
+                return redirect(url_for("api.login"))
+
+            if dbPassword == password:
+                user = User()
+                user.id = userId
+                login_user(user)
+                if identity == "Doctor":
+                    return redirect(url_for("api.period"))
+                    # return redirect(url_for("index"))
+                elif identity == "FRONT_DESK":
+                    return redirect(url_for("api.period"))
+                    # return redirect(url_for("index"))
+                else:
+                    flash("僅供診所人員使用!")
+            else:
+                flash("*密碼錯誤，請再試一次")
+                return redirect(url_for("api.login"))
+        return render_template("login.html", loginFlag=current_user.is_authenticated)
+
+
 @api.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+@api.route("/period", methods=["GET", "POST"])
+@login_required
+def period():
+    # https://joseph-dougal.medium.com/flask-ajax-bootstrap-tables-9036410cbc8
+    data = [
+        {
+            "name": "John Doe",
+            "position": "Sales",
+            "salary": "$100,000",
+            "start_date": "2015",
+            "office": "New York",
+            "extn": "5421",
+        },
+        {
+            "name": "Larry Doe",
+            "position": "Trader",
+            "salary": "$100,000",
+            "start_date": "2018",
+            "office": "Tokyo",
+            "extn": "2154",
+        },
+    ]
+    return render_template(
+        "period.html",
+        # user=current_user.name,
+        data=data,
+    )
+
+
+@api.route("/record", methods=["GET", "POST"])
+@login_required
+def record():
+    return render_template(
+        "record.html",
+        #   user=current_user.name
+    )

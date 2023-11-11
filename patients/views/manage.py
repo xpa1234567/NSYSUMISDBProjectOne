@@ -28,11 +28,14 @@ class User(UserMixin):
 def user_loader(userId):
     user = User()
     user.id = userId
-    data = Member.get_role(userId)
+    memberData = Member.get_role(userId)
+    patentsData = Patients.get_patients_name(memberData[1])
+
     try:
         # IDENTITY,MID
-        user.role = data[0]
-        user.name = data[1]
+        user.role = memberData[0]
+        user.mId = memberData[1]
+        user.name = patentsData[0]
     except:
         pass
     return user
@@ -131,7 +134,7 @@ def login():
                     user = User()
                     user.id = userId
                     login_user(user)
-                    return redirect(url_for("patients.home"))
+                    return redirect(url_for("patients.period"))
                 else:
                     flash("*密碼錯誤，請再試一次")
                     return redirect(url_for("patients.login"))    
@@ -167,9 +170,9 @@ def period():
             "extn": "2154",
         },
     ]
-
+    print(current_user)
     return render_template(
-        "period.html",
+        "periodfp.html",
         user=current_user.name,
         data=data,
     )
@@ -178,4 +181,4 @@ def period():
 @patients.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    return render_template("record.html", user=current_user.name)
+    return render_template("recordfp.html", user=current_user.name)
