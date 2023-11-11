@@ -29,13 +29,18 @@ def user_loader(userId):
     user = User()
     user.id = userId
     memberData = Member.get_role(userId)
-    patentsData = Patients.get_patients_name(memberData[1])
-
+    if memberData[0] == "Doctor":
+        nameData = Doctors.get_doctor_name(memberData[1])
+    elif memberData[0] == "FRONT_DESK":
+        nameData = Frontdeskpersonel.get_fdp_name(memberData[1])
+    else:
+        nameData = Patients.get_patients_name(memberData[1])
+        
     try:
         # IDENTITY,MID
         user.role = memberData[0]
         user.mId = memberData[1]
-        user.name = patentsData[0]
+        user.name = nameData[0]
     except:
         pass
     return user

@@ -23,20 +23,24 @@ login_manager.login_message = "請先登入"
 class User(UserMixin):
     pass
 
+# @login_manager.user_loader
+# def user_loader(userId):
+#     user = User()
+#     user.id = userId
+#     memberData = Member.get_role(userId)
+#     patentsData = Patients.get_patients_name(memberData[1])
+#     doctorData = Doctors.get_doctor_name(memberData[1])
+#     print(patentsData)
+#     print(doctorData)
+#     try:
+#         # IDENTITY,MID
+#         user.role = memberData[0]
+#         user.mId = memberData[1]
+#         user.name = patentsData[0]
+#     except:
+#         pass
+#     return user
 
-@login_manager.user_loader
-def user_loader(userId):
-    user = User()
-    user.id = userId
-    data = Member.get_role(userId)
-    doctorData = Doctors.get_doctor_name(data[1])
-    try:
-        user.role = data[0]
-        user.mId = data[1]
-        user.name = doctorData[0]
-    except:
-        pass
-    return user
 
 @api.route("/register", methods=["POST", "GET"])
 def register():
@@ -170,7 +174,7 @@ def period():
     ]
     return render_template(
         "period.html",
-        # user=current_user.name,
+        user=current_user.name,
         data=data,
     )
 
@@ -180,5 +184,5 @@ def period():
 def record():
     return render_template(
         "record.html",
-        #   user=current_user.name
+          user=current_user.name
     )
