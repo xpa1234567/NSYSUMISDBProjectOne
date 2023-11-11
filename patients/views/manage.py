@@ -35,7 +35,7 @@ def user_loader(userId):
         nameData = Frontdeskpersonel.get_fdp_name(memberData[1])
     else:
         nameData = Patients.get_patients_name(memberData[1])
-        
+
     try:
         # IDENTITY,MID
         user.role = memberData[0]
@@ -48,7 +48,12 @@ def user_loader(userId):
 
 @patients.route("/", methods=["GET", "POST"])
 def home():
-    return render_template("indexfp.html",loginFlag=current_user.is_authenticated)
+    return render_template("indexfp.html", loginFlag=current_user.is_authenticated)
+
+
+@patients.route("/index", methods=["GET", "POST"])
+def index():
+    return render_template("homefp.html", user=current_user.name)
 
 
 @patients.route("/register", methods=["POST", "GET"])
@@ -89,7 +94,7 @@ def register():
             try:
                 # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
                 mId = memberData[0][0]
-                format = 'yyyy-mm-dd'
+                format = "yyyy-mm-dd"
                 patientsinput = {
                     "pId": "p" + mId,
                     "patientsName": patientsName,
@@ -109,7 +114,7 @@ def register():
             except:
                 flash("Falied!")
                 return redirect(url_for("patients.register"))
-            
+
     return render_template("registerfp.html")
 
 
@@ -139,13 +144,14 @@ def login():
                     user = User()
                     user.id = userId
                     login_user(user)
-                    return redirect(url_for("patients.period"))
+                    return redirect(url_for("patients.index"))
                 else:
                     flash("*密碼錯誤，請再試一次")
-                    return redirect(url_for("patients.login"))    
+                    return redirect(url_for("patients.login"))
             else:
                 flash("僅供病人使用!")
-        return render_template("loginfp.html",loginFlag=current_user.is_authenticated)
+        return render_template("loginfp.html", loginFlag=current_user.is_authenticated)
+
 
 @patients.route("/logout")
 def logout():
@@ -175,7 +181,6 @@ def period():
             "extn": "2154",
         },
     ]
-    print(current_user)
     return render_template(
         "periodfp.html",
         user=current_user.name,
@@ -186,4 +191,8 @@ def period():
 @patients.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    return render_template("recordfp.html", user=current_user.name)
+    patientData = Patients.get_patient(current_user.mId)
+
+    return render_template(
+        "recordfp.html", user=current_user.name, data=patientData[1:9]
+    )

@@ -23,6 +23,14 @@ login_manager.login_message = "請先登入"
 class User(UserMixin):
     pass
 
+@api.route("/index", methods=["GET", "POST"])
+@login_required
+def index():
+    return render_template(
+        "home.html",
+        user=current_user.name
+    )
+
 # @login_manager.user_loader
 # def user_loader(userId):
 #     user = User()
@@ -184,5 +192,22 @@ def period():
 def record():
     return render_template(
         "record.html",
+          user=current_user.name
+    )
+
+@api.route("/personal", methods=["GET", "POST"])
+@login_required
+def personal():
+    return render_template(
+        "personal.html",
+          user=current_user.name
+    )
+
+
+@api.route("/acupoint", methods=["GET", "POST"])
+@login_required
+def acupoint():
+    return render_template(
+        "acupoint.html",
           user=current_user.name
     )

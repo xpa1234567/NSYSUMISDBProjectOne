@@ -43,7 +43,7 @@
     <nav class="navbar navbar-expand flex-column flex-md-row bd-navbar navbar-dark"
         style="background-color: rgba(221, 170, 200, 0.767);">
         <div class="container-fluid container-xxl">
-            <a class="navbar-brand" href="{{ url_for('patients.home') }}"> <img src="/static/img/weblogo.ico" alt=""
+            <a class="navbar-brand" href="{{ url_for('patients.index') }}"> <img src="/static/img/weblogo.ico" alt=""
                     width="30" height="24">&nbsp;
                 點穴中醫診所系統</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
@@ -57,7 +57,7 @@
                         <a class="nav-link" href="{{ url_for('patients.period') }}">預約時段</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('patients.record') }}">病人資料</a>
+                        <a class="nav-link" href="{{ url_for('patients.record') }}">個人資料</a>
                     </li>
                 </ul>
 

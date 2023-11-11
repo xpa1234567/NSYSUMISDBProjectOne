@@ -35,26 +35,37 @@ class Frontdeskpersonel:
         sql = "INSERT INTO FRONT_DESK_PERSONNEL (PERSONNEL_ID, NAME, MEMBER_ID) VALUES (:pId, :username , :mId)"
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
     def get_fdp_name(mId):
         sql = "SELECT NAME FROM FRONT_DESK_PERSONNEL WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
 
 class Doctors:
     def create_doc_member(input):
         sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :speicalization, :position, :education, :experience, :mId)"
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
     def get_doctor_name(mId):
         sql = "SELECT NAME FROM DOCTORS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
+
 class Patients:
+    def get_patient(mId):
+        sql = "SELECT * FROM PATIENTS WHERE MEMBER_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
     def create_patients_member(input):
         sql = "INSERT INTO PATIENTS (PATIENT_ID, NAME, BIRTHDAY, MOBILE, PHONE, ADDRESS, DIET_AND_LIFESTYLE, CONGENITAL_DISEASE, NOTES, MEMBER_ID) VALUES (:pId, :patientsName, TO_DATE(:patientsBirthday, :format), :patientsMobilephone, :patientsPhone, :patientsAddress, :patientsHabbit, :patientsDisease, :patientsNote, :mId)"
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
+
     def get_patients_name(mId):
         sql = "SELECT NAME FROM PATIENTS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
 
 class Member:
     def get_role(userid):
