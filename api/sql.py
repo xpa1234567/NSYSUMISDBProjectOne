@@ -52,6 +52,10 @@ class Patients:
 
 
 class Member:
+    def get_role(userid):
+        sql = "SELECT IDENTITY, MID FROM MEMBER WHERE MID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": userid}))
+
     def get_member(account):
         sql = "SELECT MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY FROM MEMBER WHERE IDENTIFICATION_NUMBER = :IDENTIFICATION_NUMBER"
         return DB.fetchall(
@@ -75,10 +79,6 @@ class Member:
     # def get_order(userid):
     #     sql = "SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC"
     #     return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": userid}))
-
-    # def get_role(userid):
-    #     sql = "SELECT IDENTITY, MID FROM MEMBER WHERE MID = :id "
-    #     return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": userid}))
 
 
 # class Cart:

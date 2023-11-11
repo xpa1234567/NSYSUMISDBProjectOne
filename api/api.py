@@ -61,9 +61,13 @@ def login():
                 user.id = userId
                 login_user(user)
                 if identity == "Doctor":
-                    return redirect(url_for("patients.home"))
+                    # return redirect(url_for("patients.home"))
+                    return redirect(url_for("index"))
                 elif identity == "FRONT_DESK":
-                    return redirect(url_for("patients.home"))
+                    # return redirect(url_for("patients.home"))
+                    return redirect(url_for("index"))
+                else:
+                     flash("僅供診所人員使用!")
             else:
                 flash("*密碼錯誤，請再試一次")
                 return redirect(url_for("api.login"))
@@ -88,6 +92,10 @@ def register():
             flash("Falied!")
             return redirect(url_for("api.register"))
         else:
+            if identity == "doctor":
+                identity = "Doctor"
+            else:
+                identity = "FRONT_DESK"
             memberInput = {
                 "account": account,
                 "password": password,
@@ -100,7 +108,7 @@ def register():
             try:
                 # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
                 mId = memberData[0][0]
-                if identity == "doctor":
+                if identity == "Doctor":
                     speicalization = request.form["speicalization"]
                     position = request.form["position"]
                     education = request.form["education"]

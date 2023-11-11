@@ -57,7 +57,7 @@ def register():
         patientsDisease = request.form["patientsDisease"]
         patientsNote = request.form["patientsNote"]
 
-        identity = "patients"
+        identity = "PATIENT"
 
         # Checl Duplicates Accounts
         exist_account = Member.get_all_account()
@@ -126,18 +126,17 @@ def login():
                 flash("*沒有此帳號")
                 return redirect(url_for("patients.login"))
 
-            if dbPassword == patientspassword:
-                user = User()
-                user.id = userId
-                login_user(user)
-                if identity == "PATIENT":
+            if identity == "PATIENT":
+                if dbPassword == patientspassword:
+                    user = User()
+                    user.id = userId
+                    login_user(user)
                     return redirect(url_for("patients.home"))
                 else:
-                    return redirect(url_for("patients.home"))
-
+                    flash("*密碼錯誤，請再試一次")
+                    return redirect(url_for("patients.login"))    
             else:
-                flash("*密碼錯誤，請再試一次")
-                return redirect(url_for("patients.login"))    
+                flash("僅供病人使用!")
         return render_template("loginfp.html",loginFlag=current_user.is_authenticated)
 
 @patients.route("/logout")
