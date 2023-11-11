@@ -217,7 +217,6 @@ def personal():
         ]
 
     else:
-        dData = Doctors.get_doctor(current_user.mId)
         returnData = [
             {
                 "name": current_user.name,

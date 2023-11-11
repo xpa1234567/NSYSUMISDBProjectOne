@@ -24,40 +24,44 @@
                             {% endfor %}
                         </tr>
                     </thead> -->
+                    {% if data[0].speicalization %}
+                    <tbody>
+                        <tr>
+                            {% for col in data %}
+
+                            <td scope="row">姓名： {{ col.name }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">醫療專長：{{ col.speicalization }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">職稱：{{ col.positions }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">學歷：{{ col.education }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">經歷：{{ col.experience }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                    {% else %}
                     <tbody>
                         <tr>
                             {% for col in data %}
                             <td scope="row">姓名： {{ col.name }}</td>
                             {% endfor %}
                         </tr>
-                        <tr>
-                            {% if speicalization in data %}
-                            {% for col in data %}
-                            <td scope="row">醫療專長：{{ col.speicalization }}</td>
-                            {% endfor %}
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            {% if positions in data %}
-                            {% for col in data %}
-                            <td scope="row">職稱：{{ col.positions }}</td>
-                            {% endfor %}
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            {% if education in data %}
-                            {% for col in data %}
-                            <td scope="row">學歷：{{ col.education }}</td>
-                            {% endfor %}
-                            {% endif %}
-                        </tr>
-                        <tr>
-                            {% if experience in data %}
-                            {% for col in data %}
-                            <td scope="row">經歷：{{ col.experience }}</td>
-                            {% endfor %}
-                            {% endif %}
-                        </tr>
+                    </tbody>
+                    {% endif %}
                 </table>
 
             </div>
