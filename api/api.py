@@ -1,5 +1,14 @@
 import imp
-from flask import Flask,template_rendered,render_template, Blueprint, redirect, request, url_for, flash
+from flask import (
+    Flask,
+    template_rendered,
+    render_template,
+    Blueprint,
+    redirect,
+    request,
+    url_for,
+    flash,
+)
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -23,13 +32,12 @@ login_manager.login_message = "請先登入"
 class User(UserMixin):
     pass
 
+
 @api.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-    return render_template(
-        "home.html",
-        user=current_user.name
-    )
+    return render_template("home.html", user=current_user.name)
+
 
 # @login_manager.user_loader
 # def user_loader(userId):
@@ -190,24 +198,35 @@ def period():
 @api.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    return render_template(
-        "record.html",
-          user=current_user.name
-    )
+    return render_template("record.html", user=current_user.name)
+
 
 @api.route("/personal", methods=["GET", "POST"])
 @login_required
 def personal():
-    return render_template(
-        "personal.html",
-          user=current_user.name
-    )
+    if current_user.role == "Doctor":
+        dData = Doctors.get_doctor(current_user.mId)
+        returnData = [
+            {
+                "name": dData[1],
+                "speicalization": dData[2],
+                "positions": dData[3],
+                "education": dData[4],
+                "experience": dData[5],
+            }
+        ]
+
+    else:
+        dData = Doctors.get_doctor(current_user.mId)
+        returnData = [
+            {
+                "name": current_user.name,
+            }
+        ]
+    return render_template("personal.html", user=current_user.name, data=returnData)
 
 
 @api.route("/acupoint", methods=["GET", "POST"])
 @login_required
 def acupoint():
-    return render_template(
-        "acupoint.html",
-          user=current_user.name
-    )
+    return render_template("acupoint.html", user=current_user.name)

@@ -15,17 +15,57 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="fw-normal mb-0 text-black">個人資料</h3>
                 </div>
-
-                <div class="container px-4 text-center">
-                    <div class="row gx-5">
-                        {% for i in data %}
-                        <div class="col">
-                            <div class="p-3">{{ i}}</div>
+                <table id="jds-example" class="table">
+                    <!-- <thead>
+                        <tr>
+                            {% for col in data %}
+                            <th scope="col"> 姓名： {{ col.name }}</th>
                             {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
+                        </tr>
+                    </thead> -->
+                    <tbody>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">姓名： {{ col.name }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">生日：{{ col.birthday }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">手機：{{ col.mobile }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">電話：{{ col.phone }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">地址：{{ col.address }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">飲食及生活習慣：{{ col.dal }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">先天疾病：{{ col.cd }}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">備註：{{ col.note }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
 
             </div>
         </div>

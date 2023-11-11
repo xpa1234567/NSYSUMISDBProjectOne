@@ -42,6 +42,9 @@ class Frontdeskpersonel:
 
 
 class Doctors:
+    def get_doctor(mId):
+        sql = "SELECT * FROM DOCTORS WHERE MEMBER_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
     def create_doc_member(input):
         sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :speicalization, :position, :education, :experience, :mId)"
         DB.execute_input(DB.prepare(sql), input)

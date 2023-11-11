@@ -191,8 +191,19 @@ def period():
 @patients.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    patientData = Patients.get_patient(current_user.mId)
+    pData = Patients.get_patient(current_user.mId)
 
-    return render_template(
-        "recordfp.html", user=current_user.name, data=patientData[1:9]
-    )
+    patientData = [
+        {
+            "name": pData[1],
+            "birthday": pData[2],
+            "mobile": pData[3],
+            "phone": pData[4],
+            "address": pData[5],
+            "dal": pData[6],
+            "cd": pData[7],
+            "note": pData[8],
+        }
+    ]
+
+    return render_template("recordfp.html", user=current_user.name, data=patientData)
