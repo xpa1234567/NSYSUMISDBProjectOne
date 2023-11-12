@@ -198,7 +198,28 @@ def period():
 @api.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    return render_template("record.html", user=current_user.name)
+    mrRecord = MedicalRecords.get_all_records()
+    returnData = []
+    for i in range(len(mrRecord)):
+        pData = Patients.get_patients_name_mr(mrRecord[i][2])
+        returnData.append(
+            {
+                "recordId": mrRecord[i][0],
+                "appointmentId": mrRecord[i][1],
+                "patientsId": mrRecord[i][2],
+                "patientName": pData[1],
+                "patientBirthday": pData[2].strftime("%Y/%m/%d"),
+                "patientMobile": pData[3],
+                "patientPhone": pData[4],
+                "patientAddress": pData[5],
+                "patientHabbit": pData[6],
+                "patientCD": pData[7],
+                "patientNotes": pData[8],
+                "vistTime": mrRecord[i][3].strftime("%Y/%m/%d %H:%M:%S"),
+                "diagnosis": str(mrRecord[i][4]),
+            }
+        )
+    return render_template("record.html", user=current_user.name, data=returnData)
 
 
 @api.route("/personal", methods=["GET", "POST"])

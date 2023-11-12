@@ -68,6 +68,10 @@ class Patients:
     def get_patients_name(mId):
         sql = "SELECT NAME FROM PATIENTS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+    
+    def get_patients_name_mr(pId):
+        sql = "SELECT * FROM PATIENTS WHERE PATIENT_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": pId}))
 
 
 class Member:
@@ -103,7 +107,10 @@ class Acupoints:
     def get_acupoints():
         sql = "SELECT * FROM ACUPOINTS"
         return DB.fetchall(DB.execute(DB.connect(), sql))
-    
+class MedicalRecords:
+    def get_all_records():
+        sql = "SELECT * FROM MEDICAL_RECORDS"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 # class Cart:
 #     def check(user_id):
 #         sql = (

@@ -196,7 +196,7 @@ def record():
     patientData = [
         {
             "name": pData[1],
-            "birthday": pData[2],
+            "birthday": pData[2].strftime("%Y/%m/%d"),
             "mobile": pData[3],
             "phone": pData[4],
             "address": pData[5],
