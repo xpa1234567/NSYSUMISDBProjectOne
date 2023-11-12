@@ -249,7 +249,39 @@ def personal():
 @api.route("/acupoint", methods=["GET", "POST"])
 @login_required
 def acupoint():
-    acupointData = Acupoints.get_acupoints()
+    if request.method == "POST":
+        if request.form["acupointId"] != "" and request.form["acupointName"] != "":
+            newacupointName = request.form["acupointName"]
+            newacupointId = request.form["acupointId"]
+
+            addinput = {
+                "acupointId": newacupointId,
+                "acupointName": newacupointName,
+            }
+            Acupoints.add_acupoints(addinput)
+            acupointData = Acupoints.get_acupoints()
+        elif request.form["acupointdId"] != "":
+            acupointdId = request.form["acupointdId"]
+            dData = Acupoints.search_acupoints_id(acupointdId)
+            if dData is not None:
+                print(dData[0])
+                Acupoints.delete_acupoints(dData[0])
+                acupointData = Acupoints.get_acupoints()
+            else:
+                acupointData = Acupoints.get_acupoints()
+            acupointData = Acupoints.get_acupoints()
+        else:
+            acupointData = Acupoints.get_acupoints()
+    else:
+        if (
+            request.values.get("keyword") != ""
+            and request.values.get("keyword") is not None
+        ):
+            search = request.values.get("keyword")
+            acupointData = Acupoints.search_acupoints(search)
+        else:
+            acupointData = Acupoints.get_acupoints()
+
     returnData = []
     for i in range(len(acupointData)):
         returnData.append(
@@ -258,5 +290,4 @@ def acupoint():
                 "name": acupointData[i][1],
             }
         )
-
     return render_template("acupoint.html", user=current_user.name, data=returnData)

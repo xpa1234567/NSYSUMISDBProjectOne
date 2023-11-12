@@ -45,6 +45,7 @@ class Doctors:
     def get_doctor(mId):
         sql = "SELECT * FROM DOCTORS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
     def create_doc_member(input):
         sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :speicalization, :position, :education, :experience, :mId)"
         DB.execute_input(DB.prepare(sql), input)
@@ -68,7 +69,7 @@ class Patients:
     def get_patients_name(mId):
         sql = "SELECT NAME FROM PATIENTS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
-    
+
     def get_patients_name_mr(pId):
         sql = "SELECT * FROM PATIENTS WHERE PATIENT_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": pId}))
@@ -103,14 +104,36 @@ class Member:
     #     sql = "SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC"
     #     return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": userid}))
 
+
 class Acupoints:
     def get_acupoints():
         sql = "SELECT * FROM ACUPOINTS"
         return DB.fetchall(DB.execute(DB.connect(), sql))
+
+    def search_acupoints(keyword):
+        sql = "SELECT * FROM ACUPOINTS WHERE ACUPOINT_NAME LIKE :keyword"
+        return DB.fetchall(
+            DB.execute_input(DB.prepare(sql), {'keyword': '%' + keyword + '%'})
+        )
+    def search_acupoints_id(id):
+        sql = "SELECT ACUPOINT_ID FROM ACUPOINTS WHERE ACUPOINT_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
+
+    def add_acupoints(input):
+        sql = "INSERT INTO ACUPOINTS (ACUPOINT_ID, ACUPOINT_NAME) VALUES (:acupointId, :acupointName)"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def delete_acupoints(id):
+        sql = "DELETE FROM ACUPOINTS WHERE ACUPOINT_ID=:id "
+        DB.execute_input(DB.prepare(sql), {"id": id})
+        DB.commit()
 class MedicalRecords:
     def get_all_records():
         sql = "SELECT * FROM MEDICAL_RECORDS"
         return DB.fetchall(DB.execute(DB.connect(), sql))
+
+
 # class Cart:
 #     def check(user_id):
 #         sql = (
