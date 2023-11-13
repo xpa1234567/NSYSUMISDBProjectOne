@@ -101,7 +101,7 @@ class Member:
     #     DB.commit()
 
     # def get_order(userid):
-    #     sql = "SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY ORDERTIME DESC"
+    #     sql = "SELECT * FROM ORDER_LIST WHERE MID = :id ORDER BY APPOINTMENT_TIME DESC"
     #     return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": userid}))
 
 
@@ -128,10 +128,43 @@ class Acupoints:
         sql = "DELETE FROM ACUPOINTS WHERE ACUPOINT_ID=:id "
         DB.execute_input(DB.prepare(sql), {"id": id})
         DB.commit()
+
 class MedicalRecords:
     def get_all_records():
         sql = "SELECT * FROM MEDICAL_RECORDS"
         return DB.fetchall(DB.execute(DB.connect(), sql))
+
+
+
+class Analysis:
+    def month_price(i):
+        # sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), SUM(200 * COUNT(APPOINTMENT_ID)) FROM APPOINTMENTS WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
+        # return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
+        sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), COUNT(APPOINTMENT_ID) FROM APPOINTMENTS WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
+
+    def month_count(i):
+        sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), COUNT(APPOINTMENT_ID) FROM APPOINTMENTS WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
+
+    def category_sale():
+        sql = "SELECT COUNT(*), ACUPOINT_NAME FROM(SELECT * FROM TREATMENT,ACUPOINTS WHERE TREATMENT.ACUPOINT_ID = ACUPOINTS.ACUPOINT_ID) GROUP BY ACUPOINT_NAME"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
+    def member_sale():
+        # sql = "SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC"
+        # return DB.fetchall(DB.execute_input(DB.prepare(sql), {"identity": "user"}))
+        sql = "SELECT COUNT(*), MEDICAL_RECORDS.DOCTOR_ID, DOCTORS.NAME FROM TREATMENT, MEDICAL_RECORDS, DOCTORS WHERE TREATMENT.MEDICAL_RECORD_ID = MEDICAL_RECORDS.RECORD_ID AND MEDICAL_RECORDS.DOCTOR_ID = DOCTORS.DOCTOR_ID GROUP BY MEDICAL_RECORDS.DOCTOR_ID, DOCTORS.NAME ORDER BY COUNT(*) DESC"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
+    def member_sale_count(): # doctor_medical_count
+        sql = "SELECT COUNT(*), MEDICAL_RECORDS.DOCTOR_ID FROM TREATMENT, MEDICAL_RECORDS WHERE TREATMENT.MEDICAL_RECORD_ID = MEDICAL_RECORDS.RECORD_ID GROUP BY MEDICAL_RECORDS.DOCTOR_ID ORDER BY COUNT(*) DESC"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+
+
+
+
+
 
 
 # class Cart:
@@ -242,7 +275,7 @@ class MedicalRecords:
 #         DB.commit()
 
 #     def get_order():
-#         sql = "SELECT OID, NAME, PRICE, ORDERTIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY ORDERTIME DESC"
+#         sql = "SELECT OID, NAME, PRICE, APPOINTMENT_TIME FROM ORDER_LIST NATURAL JOIN MEMBER ORDER BY APPOINTMENT_TIME DESC"
 #         return DB.fetchall(DB.execute(DB.connect(), sql))
 
 #     def get_orderdetail():
@@ -252,11 +285,11 @@ class MedicalRecords:
 
 # class Analysis:
 #     def month_price(i):
-#         sql = "SELECT EXTRACT(MONTH FROM ORDERTIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)"
+#         sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), SUM(PRICE) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
 #         return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
 
 #     def month_count(i):
-#         sql = "SELECT EXTRACT(MONTH FROM ORDERTIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM ORDERTIME)=:mon GROUP BY EXTRACT(MONTH FROM ORDERTIME)"
+#         sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), COUNT(OID) FROM ORDER_LIST WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
 #         return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
 
 #     def category_sale():
