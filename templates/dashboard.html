@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "banner.html" %}
 {% block head %}
 {{ super() }}
 {% endblock head %}
@@ -44,26 +44,26 @@
   var count = {{dataa|tojson}};
   var optiona = {
     title: {
-      text: '各月訂單數量分析'
+      text: '病人數量分析'
     },
     tooltip: {},
     legend: {
-      data: ['訂單數量']
+      data: ['病人數量']
     },
     xAxis: {
       data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
     },
     yAxis: {},
     series: [{
-      name: '銷售總額',
+      name: '病人每月數量',
       type: 'bar',
       // symbol: 'circle',
       symbolSize: 16,
       data: data,
       markPoint: {
         data: [
-          {type: 'max', name: '銷量最高月份'},
-          {type: 'min', name: '銷量最低月份'}
+          {type: 'max', name: '病人數最高月份'},
+          {type: 'min', name: '病人數低月份'}
         ]
       },
       label: {
@@ -86,7 +86,7 @@
   var data = {{datab|tojson}};
   var optionb = {
     title: {
-      text: '各類商品銷量分析',
+      text: '穴位使用率分析',
       left: 'center',
       top: 'center'
     },
@@ -114,7 +114,7 @@
   var countList = {{countList|tojson}};
   var optionc = {
     title: {
-      text: '使用者消費排名'
+      text: '醫生看診數排名'
     },
     xAxis: {
       max: 'dataMax'
@@ -131,7 +131,7 @@
     series: [
       {
         realtimeSort: true,
-        name: '消費總額',
+        name: '病人數',
         type: 'bar',
         data: data,
         label: {
@@ -142,7 +142,7 @@
       },
       {
         realtimeSort: true,
-        name: '訂單總數',
+        name: '病人數',
         type: 'bar',
         data: countList,
         label: {
