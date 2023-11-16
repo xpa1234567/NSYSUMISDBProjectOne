@@ -17,14 +17,12 @@
                     <h3 class="fw-normal mb-0 text-black">個人資料</h3>
                 </div>
                 <table id="jds-example" class="table">
-                    <!-- <thead>
+                    {% if data[0].specialization %}
+                    <thead>
                         <tr>
-                            {% for col in data %}
-                            <th scope="col"> 姓名： {{ col.name }}</th>
-                            {% endfor %}
+                            <th scope="col"><h5>身分［醫生］</h5></th>
                         </tr>
-                    </thead> -->
-                    {% if data[0].speicalization %}
+                    </thead>
                     <tbody>
                         <tr>
                             {% for col in data %}
@@ -34,12 +32,12 @@
                         </tr>
                         <tr>
                             {% for col in data %}
-                            <td scope="row">醫療專長：{{ col.speicalization }}</td>
+                            <td scope="row">醫療專長：{{ col.specialization }}</td>
                             {% endfor %}
                         </tr>
                         <tr>
                             {% for col in data %}
-                            <td scope="row">職稱：{{ col.positions }}</td>
+                            <td scope="row">職稱：{{ col.position }}</td>
                             {% endfor %}
                         </tr>
                         <tr>
@@ -55,6 +53,21 @@
                     </tbody>
                     {% else %}
                     <tbody>
+
+                        <thead>
+                            <tr>
+                                {% if current_user.role == "FRONT_DESK" %}
+                                <th scope="col"><h5>身分［櫃台人員］</h5></th>
+                                {% else %}
+                                <th scope="col"><h5>身分［求診者］</h5></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tr>
+                            {% for col in data %}
+                            <td scope="row">編號： {{ col.no }}</td>
+                            {% endfor %}
+                        </tr>
                         <tr>
                             {% for col in data %}
                             <td scope="row">姓名： {{ col.name }}</td>
@@ -63,6 +76,39 @@
                     </tbody>
                     {% endif %}
                 </table>
+
+                <br>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-normal mb-0 text-black">更新個人資料</h3>
+                </div>
+                <form action="{{ url_for('api.personal') }}" method="post">
+                    <div class="form-group">
+                        <label for="name">姓名：</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ data[0].name }}">
+                    </div>
+                    {% if current_user.role == "Doctor" %}
+                    <div class="form-group">
+                        <label for="specialization">醫療專長：</label>
+                        <input type="text" class="form-control" id="specialization" name="specialization" value="{{ data[0].specialization }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">職稱：</label>
+                        <input type="text" class="form-control" id="position" name="position" value="{{ data[0].position }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="education">學歷：</label>
+                        <input type="text" class="form-control" id="education" name="education" value="{{ data[0].education }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="experience">經歷：</label>
+                        <input type="text" class="form-control" id="experience" name="experience" value="{{ data[0].experience }}">
+                    </div>
+                    {% endif %}
+                    <br>
+                    <button type="submit" class="btn btn-primary">更新資料</button>
+                </form>
+
+
 
             </div>
         </div>

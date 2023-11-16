@@ -11,7 +11,7 @@
     <nav>
       <div class="nav nav-tabs" id="nav-tab" role="tablist">
         <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">用戶預約數量分析</button>
-        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">診所分類</button>
+        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">穴位分類</button>
         <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">醫生看診排名</button>        
       </div>      
     </nav>
@@ -37,7 +37,7 @@
 </div>
 
 <script>
-  // 以長條圖與折線圖分析各月訂單
+  // 以長條圖分析各月預約數
   var chartDoma = document.getElementById('maina');
   var myCharta = echarts.init(chartDoma);
   var data = {{revenue|tojson}};
@@ -105,7 +105,7 @@
     ]
   };
 
-  // 使用動態長條圖查看消費總額最多的使用者
+  // 使用動態長條圖查看診數最多的醫生排名
   var chartDomc = document.getElementById('mainc');
   var myChartc = echarts.init(chartDomc);
   var data = {{datac|tojson}};
@@ -131,7 +131,7 @@
     series: [
       {
         realtimeSort: true,
-        name: '病人數',
+        name: '療程數',
         type: 'bar',
         data: data,
         label: {
