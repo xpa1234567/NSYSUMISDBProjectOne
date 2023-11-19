@@ -93,7 +93,7 @@ def register():
                 # MID, IDENTIFICATION_NUMBER, PASSWORD, IDENTITY
                 mId = memberData[0][0]
                 if identity == "Doctor":
-                    speicalization = request.form["speicalization"]
+                    specialization = request.form["specialization"]
                     position = request.form["position"]
                     education = request.form["education"]
                     experience = request.form["experience"]
@@ -101,7 +101,7 @@ def register():
                     doctorinput = {
                         "dId": "d" + mId,
                         "username": username,
-                        "speicalization": speicalization,
+                        "specialization": specialization,
                         "position": position,
                         "education": education,
                         "experience": experience,
@@ -147,11 +147,9 @@ def login():
                 user.id = userId
                 login_user(user)
                 if identity == "Doctor":
-                    return redirect(url_for("api.period"))
-                    # return redirect(url_for("index"))
+                    return redirect(url_for("api.index"))
                 elif identity == "FRONT_DESK":
-                    return redirect(url_for("api.period"))
-                    # return redirect(url_for("index"))
+                    return redirect(url_for("api.index"))
                 else:
                     flash("僅供診所人員使用!")
             else:
@@ -229,13 +227,53 @@ def personal():
         dData = Doctors.get_doctor(current_user.mId)
         returnData = [
             {
+                "no": dData[0],
                 "name": dData[1],
-                "speicalization": dData[2],
-                "positions": dData[3],
+                "specialization": dData[2],
+                "position": dData[3],
                 "education": dData[4],
-                "experience": dData[5],
+                "experience": dData[5]
             }
         ]
+        if request.method == "POST":
+            updated_data = {
+                "name": request.form.get("name"),
+                "specialization": request.form.get("specialization"),
+                "position": request.form.get("position"),
+                "education": request.form.get("education"),
+                "experience": request.form.get("experience")
+            }
+            Doctors.update_doctor(current_user.mId, updated_data)
+            dData = Doctors.get_doctor(current_user.mId)
+            returnData = [
+                {
+                    "no": dData[0],
+                    "name": dData[1],
+                    "specialization": dData[2],
+                    "position": dData[3],
+                    "education": dData[4],
+                    "experience": dData[5]
+                }
+            ]
+    elif current_user.role == "FRONT_DESK":
+        dData = Frontdeskpersonel.get_fdp(current_user.mId)
+        returnData = [
+            {
+                "no": dData[0],
+                "name": dData[1]
+            }
+        ]
+        if request.method == "POST":
+            updated_data = {
+                "name": request.form.get("name")
+            }
+            Frontdeskpersonel.update_fdp(current_user.mId, updated_data)
+            dData = Frontdeskpersonel.get_fdp(current_user.mId)
+            returnData = [
+                {
+                    "name": dData[1]
+                }
+            ]
 
     else:
         returnData = [
@@ -291,6 +329,65 @@ def acupoint():
             }
         )
     return render_template("acupoint.html", user=current_user.name, data=returnData)
+
+
+
+@api.route("/appointment", methods=["GET", "POST"])
+@login_required
+def appointment():
+    if request.method == "POST":
+        if request.form["appointmentId"] != "" and request.form["patientId"] != "" and request.form["appointmentTime"] != "" and request.form["reason"] != "":
+            newappointmentId = request.form["appointmentId"]
+            newpatientId = request.form["patientId"]
+            newappointmentTime = request.form["appointmentTime"]
+            newreason = request.form["reason"]
+            newfdPersonnelId = request.form["fdPersonnelId"]
+
+            addinput = {
+                "appointmentId": newappointmentId,
+                "patientId": newpatientId,
+                "appointmentTime": newappointmentTime,
+                "reason": newreason,
+                "fdPersonnelId": newfdPersonnelId
+            }
+            Appointments.add_appointments(addinput)
+            appointmentsData = Appointments.get_appointments()
+        elif request.form["appointmentdId"] != "":
+            appointmentdId = request.form["appointmentdId"]
+            dData = Appointments.search_appointments_id(appointmentdId)
+            if dData is not None:
+                print(dData[0])
+                Appointments.delete_appointments(dData[0])
+                appointmentsData = Appointments.get_appointments()
+            else:
+                appointmentsData = Appointments.get_appointments()
+            appointmentsData = Appointments.get_appointments()
+        else:
+            appointmentsData = Appointments.get_appointments()
+    else:
+        if (
+            request.values.get("keyword") != ""
+            and request.values.get("keyword") is not None
+        ):
+            search = request.values.get("keyword")
+            appointmentsData = Appointments.search_appointments(search)
+        else:
+            appointmentsData = Appointments.get_appointments()
+
+    returnData = []
+    for i in range(len(appointmentsData)):
+        returnData.append(
+            {
+                "id": appointmentsData[i][0],
+                "patients_name": appointmentsData[i][1],
+                "appointment_time": appointmentsData[i][2],
+                "reason": appointmentsData[i][3],
+                "front_desk_id": appointmentsData[i][4],
+            }
+        )
+    return render_template("appointment.html", user=current_user.name, data=returnData)
+
+
 
 
 analysis = Blueprint("analysis", __name__, template_folder="../templates")

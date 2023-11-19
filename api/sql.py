@@ -40,6 +40,23 @@ class Frontdeskpersonel:
         sql = "SELECT NAME FROM FRONT_DESK_PERSONNEL WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
 
+    def get_fdp(mId):
+        sql = "SELECT * FROM FRONT_DESK_PERSONNEL WHERE MEMBER_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
+    def update_fdp(mId, data):
+        sql = """
+        UPDATE FRONT_DESK_PERSONNEL
+        SET NAME = :name
+        WHERE MEMBER_ID = :mId
+        """
+        params = {
+            "name": data["name"],
+            "mId": mId
+        }
+        DB.execute_input(DB.prepare(sql), params)
+        DB.commit()
+
 
 class Doctors:
     def get_doctor(mId):
@@ -47,13 +64,33 @@ class Doctors:
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
 
     def create_doc_member(input):
-        sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :speicalization, :position, :education, :experience, :mId)"
+        sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :specialization, :position, :education, :experience, :mId)"
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
     def get_doctor_name(mId):
         sql = "SELECT NAME FROM DOCTORS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
+    def update_doctor(mId, data):
+        sql = """
+        UPDATE DOCTORS
+        SET NAME = :name, SPECIALIZATION = :specialization, POSITION = :position, EDUCATION = :education, EXPERIENCE = :experience
+        WHERE MEMBER_ID = :mId
+        """
+        params = {
+            "name": data["name"],
+            "specialization": data["specialization"],
+            "position": data["position"],
+            "education": data["education"],
+            "experience": data["experience"],
+            "mId": mId
+        }
+        DB.execute_input(DB.prepare(sql), params)
+        DB.commit()
+
+
+
 
 
 class Patients:
@@ -66,6 +103,10 @@ class Patients:
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
 
+    def get_patients_id(mId):
+        sql = "SELECT PATIENT_ID FROM PATIENTS WHERE MEMBER_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
     def get_patients_name(mId):
         sql = "SELECT NAME FROM PATIENTS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
@@ -73,6 +114,26 @@ class Patients:
     def get_patients_name_mr(pId):
         sql = "SELECT * FROM PATIENTS WHERE PATIENT_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": pId}))
+
+    def update_patients(mId, data):
+        sql = """
+        UPDATE PATIENTS
+        SET NAME = :name, BIRTHDAY = TO_DATE(:birthday, 'YYYY/MM/DD'), MOBILE = :mobile, PHONE = :phone, ADDRESS = :address, DIET_AND_LIFESTYLE = :dal, CONGENITAL_DISEASE = :cd, NOTES = :notes
+        WHERE MEMBER_ID = :mId
+        """
+        params = {
+            "name": data["name"],
+            "birthday": data["birthday"],
+            "mobile": data["mobile"],
+            "phone": data["phone"],
+            "address": data["address"],
+            "dal": data["dal"],
+            "cd": data["cd"],
+            "notes": data["notes"],
+            "mId": mId
+        }
+        DB.execute_input(DB.prepare(sql), params)
+        DB.commit()
 
 
 class Member:
@@ -115,6 +176,7 @@ class Acupoints:
         return DB.fetchall(
             DB.execute_input(DB.prepare(sql), {'keyword': '%' + keyword + '%'})
         )
+
     def search_acupoints_id(id):
         sql = "SELECT ACUPOINT_ID FROM ACUPOINTS WHERE ACUPOINT_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
@@ -135,11 +197,47 @@ class MedicalRecords:
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
 
+class Appointments:
+    def get_appointments():
+        sql = "SELECT * FROM APPOINTMENTS ORDER BY APPOINTMENT_ID"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
+    
+    def get_max_appointments_id():
+        sql = "SELECT MAX(APPOINTMENT_ID) FROM APPOINTMENTS"
+        return DB.fetchone(DB.execute(DB.connect(), sql))
+
+    def get_appointments_from_patients_id(pId):
+        sql = "SELECT * FROM APPOINTMENTS WHERE PATIENT_ID = :id ORDER BY APPOINTMENT_ID"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": pId}))
+
+    def search_appointments(keyword):
+        sql = "SELECT * FROM APPOINTMENTS WHERE PATIENT_ID LIKE :keyword ORDER BY APPOINTMENT_ID"
+        return DB.fetchall(
+            DB.execute_input(DB.prepare(sql), {'keyword': '%' + keyword + '%'})
+        )
+
+    def search_appointments_id(id):
+        sql = "SELECT APPOINTMENT_ID FROM APPOINTMENTS WHERE APPOINTMENT_ID = :id"
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
+
+    def add_appointments(input):
+        sql = "INSERT INTO APPOINTMENTS (APPOINTMENT_ID, PATIENT_ID, APPOINTMENT_TIME, REASON, FD_PERSONNEL_ID) VALUES (:appointmentId, :patientId, TO_DATE(:appointmentTime, 'YYYY-MM-DD HH24:MI:SS'), :reason, :fdPersonnelId)"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def add_appointments_patients(input):
+        sql = "INSERT INTO APPOINTMENTS (APPOINTMENT_ID, PATIENT_ID, APPOINTMENT_TIME, REASON) VALUES (:appointmentId, :patientId, TO_DATE(:appointmentTime, 'YYYY-MM-DD HH24:MI:SS'), :reason)"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def delete_appointments(id):
+        sql = "DELETE FROM APPOINTMENTS WHERE APPOINTMENT_ID=:id "
+        DB.execute_input(DB.prepare(sql), {"id": id})
+        DB.commit()
+
 
 class Analysis:
     def month_price(i):
-        # sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), SUM(200 * COUNT(APPOINTMENT_ID)) FROM APPOINTMENTS WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
-        # return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
         sql = "SELECT EXTRACT(MONTH FROM APPOINTMENT_TIME), COUNT(APPOINTMENT_ID) FROM APPOINTMENTS WHERE EXTRACT(MONTH FROM APPOINTMENT_TIME)=:mon GROUP BY EXTRACT(MONTH FROM APPOINTMENT_TIME)"
         return DB.fetchall(DB.execute_input(DB.prepare(sql), {"mon": i}))
 
@@ -152,13 +250,11 @@ class Analysis:
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def member_sale():
-        # sql = "SELECT SUM(PRICE), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY SUM(PRICE) DESC"
-        # return DB.fetchall(DB.execute_input(DB.prepare(sql), {"identity": "user"}))
         sql = "SELECT COUNT(*), MEDICAL_RECORDS.DOCTOR_ID, DOCTORS.NAME FROM TREATMENT, MEDICAL_RECORDS, DOCTORS WHERE TREATMENT.MEDICAL_RECORD_ID = MEDICAL_RECORDS.RECORD_ID AND MEDICAL_RECORDS.DOCTOR_ID = DOCTORS.DOCTOR_ID GROUP BY MEDICAL_RECORDS.DOCTOR_ID, DOCTORS.NAME ORDER BY COUNT(*) DESC"
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
     def member_sale_count(): # doctor_medical_count
-        sql = "SELECT COUNT(*), MEDICAL_RECORDS.DOCTOR_ID FROM TREATMENT, MEDICAL_RECORDS WHERE TREATMENT.MEDICAL_RECORD_ID = MEDICAL_RECORDS.RECORD_ID GROUP BY MEDICAL_RECORDS.DOCTOR_ID ORDER BY COUNT(*) DESC"
+        sql = "SELECT COUNT(*), MEDICAL_RECORDS.DOCTOR_ID FROM MEDICAL_RECORDS GROUP BY MEDICAL_RECORDS.DOCTOR_ID ORDER BY COUNT(*) DESC"
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
 

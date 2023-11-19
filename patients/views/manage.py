@@ -188,13 +188,69 @@ def period():
     )
 
 
+@patients.route("/appointment", methods=["GET", "POST"])
+@login_required
+def appointment():
+    pId = Patients.get_patients_id(current_user.mId)[0]
+
+    if request.method == "POST":
+        if request.form["appointmentId"] != "" and request.form["appointmentTime"] != "" and request.form["reason"] != "":
+            newappointmentId = request.form["appointmentId"]
+            newappointmentTime = request.form["appointmentTime"]
+            newreason = request.form["reason"]
+            addinput = {
+                "appointmentId": newappointmentId,
+                "patientId": pId,
+                "appointmentTime": newappointmentTime,
+                "reason": newreason,
+            }
+            Appointments.add_appointments_patients(addinput)
+            appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+        elif request.form["appointmentdId"] != "":
+            appointmentdId = request.form["appointmentdId"]
+            dData = Appointments.search_appointments_id(appointmentdId)
+            if dData is not None:
+                print(dData[0])
+                Appointments.delete_appointments(dData[0])
+                appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+            else:
+                appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+            appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+        else:
+            appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+    else:
+        if (
+            request.values.get("keyword") != ""
+            and request.values.get("keyword") is not None
+        ):
+            search = request.values.get("keyword")
+            appointmentsData = Appointments.search_appointments(search)
+        else:
+            appointmentsData = Appointments.get_appointments_from_patients_id(pId)
+
+    maxAppointId = Appointments.get_max_appointments_id()[0]
+    newAppointId = 'A' + str(int(maxAppointId[1:])+1)
+    returnData = []
+    for i in range(len(appointmentsData)):
+        returnData.append(
+            {
+                "id": appointmentsData[i][0],
+                "patients_name": appointmentsData[i][1],
+                "appointment_time": appointmentsData[i][2],
+                "reason": appointmentsData[i][3],
+                "front_desk_id": appointmentsData[i][4],
+            }
+        )
+    return render_template("appointmentfp.html", user=current_user.name, data=returnData, newAppointId=newAppointId)
+
+
 @patients.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
     pData = Patients.get_patient(current_user.mId)
-
     patientData = [
         {
+            "no": pData[0],
             "name": pData[1],
             "birthday": pData[2].strftime("%Y/%m/%d"),
             "mobile": pData[3],
@@ -202,8 +258,34 @@ def record():
             "address": pData[5],
             "dal": pData[6],
             "cd": pData[7],
-            "note": pData[8],
+            "notes": pData[8]
         }
     ]
+    if request.method == "POST":
+        updated_data = {
+            "name": request.form.get("name"),
+            "birthday": request.form.get("birthday"),
+            "mobile": request.form.get("mobile"),
+            "phone": request.form.get("phone"),
+            "address": request.form.get("address"),
+            "dal": request.form.get("dal"),
+            "cd": request.form.get("cd"),
+            "notes": request.form.get("notes")
+        }
+        Patients.update_patients(current_user.mId, updated_data)
+        pData = Patients.get_patient(current_user.mId)
+        patientData = [
+            {
+                "no": pData[0],
+                "name": pData[1],
+                "birthday": pData[2].strftime("%Y/%m/%d"),
+                "mobile": pData[3],
+                "phone": pData[4],
+                "address": pData[5],
+                "dal": pData[6],
+                "cd": pData[7],
+                "notes": pData[8]
+            }
+        ]
 
     return render_template("recordfp.html", user=current_user.name, data=patientData)

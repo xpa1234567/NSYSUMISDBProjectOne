@@ -8,7 +8,7 @@
 {% block content%}
 <div class="position-absolute top-50 start-50 translate-middle">
     <img class="index_pic" src="{{ url_for('static', filename='./img/background.png') }}">
-    <h1 class="index_title">Project One <br> 點穴中醫診所系統</h1>
+    <h1 class="index_title">Project One <br> 點穴中醫診所 (醫生/櫃台使用) </h1>
     <div class="btn_div">
 
         {% if loginFlag == False %}
@@ -23,7 +23,7 @@
             <button class="index_btn">首頁</button>
         </a>
         <a href="{{ url_for('api.logout') }}">
-            <button class="index_btn">登出系統</button>
+            <button class="index_btn">登出</button>
         </a>
         {% endif %}
     </div>
