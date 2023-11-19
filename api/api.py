@@ -196,7 +196,46 @@ def period():
 @api.route("/record", methods=["GET", "POST"])
 @login_required
 def record():
-    mrRecord = MedicalRecords.get_all_records()
+    if request.method == "POST":
+        dId = Doctors.get_doctors_id(current_user.mId)[0]
+        if request.form["recordId"] != "" and request.form["appointmentId"] != "" and request.form["patientId"] != "" and request.form["visit_time"] != "" and request.form["diagnosis"] != "":
+            newrecordId = request.form["recordId"]
+            newappointmentIde = request.form["appointmentId"]
+            newpatientId = request.form["patientId"]
+            newvisit_time = request.form["visit_time"]
+            newdiagnosis = request.form["diagnosis"]
+            addinput = {
+                "recordId": newrecordId,
+                "appointmentId": newappointmentIde,
+                "patientId": newpatientId,
+                "visit_time": newvisit_time,
+                "diagnosis": newdiagnosis,
+                "dId": dId
+            }
+            MedicalRecords.add_records_doctors(addinput)
+            mrRecord = MedicalRecords.get_all_records()
+        elif request.form["recorddId"] != "":
+            recorddId = request.form["recorddId"]
+            dData = MedicalRecords.search_records_id(recorddId)
+            if dData is not None:
+                print(dData[0])
+                MedicalRecords.delete_records(dData[0])
+                mrRecord = MedicalRecords.get_all_records()
+            else:
+                mrRecord = MedicalRecords.get_all_records()
+            mrRecord = MedicalRecords.get_all_records()
+        else:
+            mrRecord = MedicalRecords.get_all_records()
+    else:
+        if (
+            request.values.get("keyword") != ""
+            and request.values.get("keyword") is not None
+        ):
+            search = request.values.get("keyword")
+            mrRecord = MedicalRecords.get_records_from_patients_id(search)
+        else:
+            mrRecord = MedicalRecords.get_all_records()
+
     returnData = []
     for i in range(len(mrRecord)):
         pData = Patients.get_patients_name_mr(mrRecord[i][2])
@@ -452,3 +491,61 @@ def dashboard():
         countList=countList,
         user=current_user.name,
     )
+
+
+@api.route("/treatment", methods=["GET", "POST"])
+@login_required
+def treatment():
+    if request.method == "POST":
+        if request.form["medicalRecordId"] != "" and request.form["reactionId"] != "" and request.form["acupointId"] != "" and request.form["treatmentDescription"] != "":
+            newtmedicalRecordId = request.form["medicalRecordId"]
+            newreactionId = request.form["reactionId"]
+            newacupointId = request.form["acupointId"]
+            newtreatmentDescription = request.form["treatmentDescription"]
+            addinput = {
+                "medicalRecordId": newtmedicalRecordId,
+                "reactionId": newreactionId,
+                "acupointId": newacupointId,
+                "treatmentDescription": newtreatmentDescription
+            }
+            Treatment.add_treatment(addinput)
+            treatmentData = Treatment.get_treatment()
+        elif request.form["medicalRecorddId"] != "" and request.form["reactiondId"] != "" and request.form["acupointdId"] != "":
+            medicalRecorddId = request.form["medicalRecorddId"]
+            reactiondId = request.form["reactiondId"]
+            acupointdId = request.form["acupointdId"]
+            delinput = {
+                "medicalRecorddId": medicalRecorddId,
+                "reactiondId": reactiondId,
+                "acupointdId": acupointdId
+            }
+            dData = Treatment.search_treatments(delinput)
+            if dData is not None:
+                Treatment.delete_treatment(delinput)
+                treatmentData = Treatment.get_treatment()
+            else:
+                treatmentData = Treatment.get_treatment()
+            treatmentData = Treatment.get_treatment()
+        else:
+            treatmentData = Treatment.get_treatment()
+    else:
+        if (
+            request.values.get("keyword") != ""
+            and request.values.get("keyword") is not None
+        ):
+            search = request.values.get("keyword")
+            treatmentData = Treatment.search_treatment(search)
+        else:
+            treatmentData = Treatment.get_treatment()
+
+    returnData = []
+    for i in range(len(treatmentData)):
+        returnData.append(
+            {
+                "medicalRecordId": treatmentData[i][0],
+                "reactionId": treatmentData[i][1],
+                "acupointId": treatmentData[i][2],
+                "treatmentDescription": treatmentData[i][3],
+            }
+        )
+    return render_template("treatment.html", user=current_user.name, data=returnData)

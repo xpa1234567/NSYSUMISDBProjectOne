@@ -63,6 +63,10 @@ class Doctors:
         sql = "SELECT * FROM DOCTORS WHERE MEMBER_ID = :id "
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
 
+    def get_doctors_id(mId):
+        sql = "SELECT DOCTOR_ID FROM DOCTORS WHERE MEMBER_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": mId}))
+
     def create_doc_member(input):
         sql = "INSERT INTO DOCTORS (DOCTOR_ID, NAME, SPECIALIZATION, POSITION, EDUCATION, EXPERIENCE, MEMBER_ID) VALUES (:dId, :username, :specialization, :position, :education, :experience, :mId)"
         DB.execute_input(DB.prepare(sql), input)
@@ -88,9 +92,6 @@ class Doctors:
         }
         DB.execute_input(DB.prepare(sql), params)
         DB.commit()
-
-
-
 
 
 class Patients:
@@ -191,10 +192,35 @@ class Acupoints:
         DB.execute_input(DB.prepare(sql), {"id": id})
         DB.commit()
 
+
 class MedicalRecords:
     def get_all_records():
         sql = "SELECT * FROM MEDICAL_RECORDS"
         return DB.fetchall(DB.execute(DB.connect(), sql))
+
+    def add_records_doctors(input):
+        sql = "INSERT INTO MEDICAL_RECORDS (RECORD_ID, APPOINTMENT_ID, PATIENT_ID, VISIT_TIME, DIAGNOSIS, DOCTOR_ID) VALUES (:recordId, :appointmentId, :patientId, TO_DATE(:visit_time, 'YYYY-MM-DD HH24:MI:SS'), :diagnosis, :dId)"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def search_records_id(id):
+        sql = "SELECT RECORD_ID FROM MEDICAL_RECORDS WHERE RECORD_ID = :id"
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
+        DB.commit()
+
+    def search_records_patients(id):
+        sql = "SELECT RECORD_ID FROM MEDICAL_RECORDS WHERE RECORD_ID = :id"
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
+
+    def get_records_from_patients_id(pId):
+        sql = "SELECT * FROM MEDICAL_RECORDS WHERE PATIENT_ID = :id ORDER BY RECORD_ID"
+        return DB.fetchall(DB.execute_input(DB.prepare(sql), {"id": pId}))
+
+
+    def delete_records(id):
+        sql = "DELETE FROM MEDICAL_RECORDS WHERE RECORD_ID=:id "
+        DB.execute_input(DB.prepare(sql), {"id": id})
+        DB.commit()
 
 
 class Appointments:
@@ -258,8 +284,34 @@ class Analysis:
         return DB.fetchall(DB.execute(DB.connect(), sql))
 
 
+class Treatment:
+    def get_treatment():
+        sql = "SELECT * FROM TREATMENT ORDER BY MEDICAL_RECORD_ID, REACTION_ID"
+        return DB.fetchall(DB.execute(DB.connect(), sql))
 
+    def search_treatment(keyword):
+        sql = "SELECT * FROM TREATMENT WHERE MEDICAL_RECORD_ID LIKE :keyword"
+        return DB.fetchall(
+            DB.execute_input(DB.prepare(sql), {'keyword': '%' + keyword + '%'})
+        )
 
+    def search_treatment_id(id):
+        sql = "SELECT MEDICAL_RECORD_ID FROM TREATMENT WHERE MEDICAL_RECORD_ID = :id "
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), {"id": id}))
+
+    def search_treatments(input):
+        sql = "SELECT MEDICAL_RECORD_ID FROM TREATMENT WHERE MEDICAL_RECORD_ID = :medicalRecorddId AND REACTION_ID = :reactiondId AND ACUPOINT_ID = :acupointdId"
+        return DB.fetchone(DB.execute_input(DB.prepare(sql), input))
+
+    def add_treatment(input):
+        sql = "INSERT INTO TREATMENT (MEDICAL_RECORD_ID, REACTION_ID, ACUPOINT_ID, TREATMENT_DESCRIPTION) VALUES (:medicalRecordId, :reactionId, :acupointId, :treatmentDescription)"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
+
+    def delete_treatment(input):
+        sql = "DELETE FROM TREATMENT WHERE MEDICAL_RECORD_ID = :medicalRecorddId AND REACTION_ID = :reactiondId AND ACUPOINT_ID = :acupointdId"
+        DB.execute_input(DB.prepare(sql), input)
+        DB.commit()
 
 
 

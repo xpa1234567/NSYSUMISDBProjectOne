@@ -31,7 +31,7 @@
                 </form><br />
                 <form method="post" action={{ url_for('api.appointment') }}>
                     <form class="d-flex col-sm-4">
-                        <div class="input-group ">
+                        <div class="input-group">
                             <input name="appointmentId" type=" search" placeholder="預約編號">
                             <input name="patientId" type="search" placeholder="病人編號">
                             <input name="appointmentTime" type=" search" placeholder="預約時間">
@@ -41,7 +41,7 @@
                                 url_for('api.appointment')}}>新增預約</button>
                         </div>
                         <br>
-                        <div class="input-group ">
+                        <div class="input-group">
                             <input name="appointmentdId" type=" search" placeholder="欲刪除預約編號">
                             <button class="btn btn-outline-success" type="submit" action={{ url_for('api.appointment')
                                 }}>刪除預約</button>

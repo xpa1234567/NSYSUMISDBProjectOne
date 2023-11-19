@@ -210,7 +210,6 @@ def appointment():
             appointmentdId = request.form["appointmentdId"]
             dData = Appointments.search_appointments_id(appointmentdId)
             if dData is not None:
-                print(dData[0])
                 Appointments.delete_appointments(dData[0])
                 appointmentsData = Appointments.get_appointments_from_patients_id(pId)
             else:
